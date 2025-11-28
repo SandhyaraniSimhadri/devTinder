@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express(); //instance of express
-
+import { userAuth } from "../middlewares/auth.js";
+import { adminAuth } from "./middlewares/auth.js";
 //this is called as request handler
 // here for all requests, its giving hello from server
 // app.use((req,res)=>{
@@ -97,24 +98,24 @@ const app = express(); //instance of express
 
 
 
-app.use("/user",(req,res)=>{
+// app.use("/user",(req,res)=>{
     //route handler
     // res.send("Route handler 1");
 
     // if we don't send any thing from the server as a response, then incmoing request will wait till the timeout timer
     // after TOT, that request will be cancelled.. this all is like going into loop
     // so we have to send response back
-}) 
+// }) 
 // there can be multiple handlers in a single route handler
 //response will be 'response' because request will go to first route handler 
 //if we don't have res.send in first route handler, then response will be like loop again, request will be hang
 // how to go to second route handler.... for that we need to call next().. then output will be 'response 1'
-app.use("/user",(req,res,next)=>{
-    // res.send("response");
-    next();
-},(req,res)=>{
-     res.send("response 1");
-})
+// app.use("/user",(req,res,next)=>{
+//     // res.send("response");
+//     next();
+// },(req,res)=>{
+//      res.send("response 1");
+// })
 
 
 //response will be 'route','response','route 1' and an error message like cannot set headers after they are send to client
@@ -206,22 +207,145 @@ app.use("/user",(req,res,next)=>{
 
 
 //we can have sub array also,, no issue.. it will work as same above.. wrapping routes inside array won't change anything
-app.use("/user",[(req,res,next)=>{
-    console.log("route");
-    next();
-},(req,res)=>{
-        console.log("route 1");
-     res.send("response 1");
-}],(req,res)=>{
-        console.log("route 2");
-     res.send("response 2");
-},(req,res)=>{
-        console.log("route 3");
-     res.send("response 3");
-},(req,res)=>{
-        console.log("route 4");
-     res.send("response 4");
-})
+// app.use("/user",[(req,res,next)=>{
+//     console.log("route");
+//     next();
+// },(req,res)=>{
+//         console.log("route 1");
+//      res.send("response 1");
+// }],(req,res)=>{
+//         console.log("route 2");
+//      res.send("response 2");
+// },(req,res)=>{
+//         console.log("route 3");
+//      res.send("response 3");
+// },(req,res)=>{
+//         console.log("route 4");
+//      res.send("response 4");
+// })
+
+
+
+
+// response - 'response'
+// app.use("/user",(req,res,next)=>{
+//     // res.send("response");
+//     next();
+// })
+// app.use("/user",(req,res,next)=>{
+//     res.send("response");
+// })
+
+
+
+// response - 'response', 2nd route handler wont called at all
+// app.use("/user",(req,res,next)=>{
+//     res.send("response");
+// })
+// app.use("/user",(req,res,next)=>{
+//     // res.send("response");
+//     next();
+// })
+
+
+// response - error - cannot get /user
+// app.use("/user",(req,res,next)=>{
+//    next()
+// })
+// app.use("/user",(req,res,next)=>{
+//     next();
+// })
+
+
+//GET - /users--- response -- 'response' -- 
+//because first route handler itself sending response.. it checks all the app.xxx(matching routes) first and then execute them in order till it will send response back
+// it will go to the middlewares till it finds res.send or res.end.. the function which sends response back to client is response handler
+// all the previous functions which dont send response back are called middlewares
+// means when we do api call, it will goes through the middlware chain first and then finally to response handler
+
+// app.use("/",(req,res,next)=>{
+//     res.send("response");
+// })
+
+// app.get("/user",(req,res,next)=>{
+//     res.send("response");
+// })
+
+
+
+// app.get("/admin/getAllData",(req,res,next)=>{
+//     //logic to check if the request is from authorized user
+//     //doing this again again for every api is difficult, so we can use middleware for this
+//     //all logic to get all data from db
+//     const token="xyz";
+//     const isAdminAuthrized=token==="xyz";
+//     if(isAdminAuthrized){
+//         res.send("authorized admin data");
+//     }else{
+//         res.status(401).send("unauthorized access");
+//     }
+//     res.send("response");
+// });
+
+// app.get("/admin/deleteUsers",(req,res,next)=>{
+//     //all logic to get all data from db
+//      const token="xyz";
+//     const isAdminAuthrized=token==="xyz";
+//     if(isAdminAuthrized){
+//         res.send("authorized admin data");
+//     }else{
+//         res.status(401).send("unauthorized access");
+//     }
+//     res.send("response");
+//     res.send("delete ");
+// });
+// writing same code again and again for every admin api is difficult, so we can use middleware for this
+
+
+//generally middlewares are written in app.use because it will be applicable for all routes with diff methods
+// app.use("/admin",(req,res,next)=>{
+//     //logic to check if the request is from authorized user
+//     //doing this again again for every api is difficult, so we can use middleware for this
+//     // here the route which are coming with /admin only will go through this middleware
+//     // so all admin related routes should be with /admin at start
+//     const token="xyz";
+//     const isAdminAuthrized=token==="xyz";
+//     if(!isAdminAuthrized){
+//             res.status(401).send("unauthorized access");
+//         }else{
+//             next();
+//         }
+// });
+app.use("/admin",adminAuth);
+app.get("/admin/getAllData",(req,res,next)=>{
+    //all logic to get all data from db and for authorized user only
+    res.send("response");
+});
+
+// for single route also we can use middleware in this way
+//here it will first go to userAuth middleware and check whether the user is authorized and then to route handler
+// app.get("/user/getAllData",userAuth,(req,res,next)=>{
+//     //all logic to get all data from db and for authorized user only
+//     res.send("response");
+// });
+// //user login route may not need authorization, so we are not using userAuth middleware here
+// app.get("/user/login",(req,res,next)=>{
+//     //all logic to login user
+//     res.send("response");
+// });
+
+
+
+//there is a method app.use and app.all also, difference is app.use will work for all http methods and app.all also will work for all http methods, but difference is app.use is generally used for middlewares and app.all is used to handle all http methods for a particular route and send response back
+// some other difference is app.use can have path pattern matching but app.all dont have path pattern matching, it should be exact path, like /user etc , not /us etc.
+// and app.use can have multiple route handlers as array also, but app.all dont have that feature and app.use can be used for middlewares but app.all is generally not used for middlewares
+//and app.use can be used without path also, but app.all should have path always
+// and app.use can be used to handle static files also but app.all is generally not used for static files and app.use can be used to handle errors also but app.all is generally not used for errors
+// and app.use can be used to handle sub routes also but app.all is generally not used for sub routes
+// and app.use can be used to handle route parameters also but app.all is generally not used for route parameters
+// and app.use can be used to handle query parameters also but app.all is generally not used for query parameters and app.use can be used to handle request body also but app.all is generally not used for request body
+
+// other way to write middleware for admin authorization is using util function
 app.listen(3000,()=>{
     console.log("server successfully listening to 3000");
 });
