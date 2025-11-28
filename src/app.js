@@ -346,6 +346,31 @@ app.get("/admin/getAllData",(req,res,next)=>{
 // and app.use can be used to handle query parameters also but app.all is generally not used for query parameters and app.use can be used to handle request body also but app.all is generally not used for request body
 
 // other way to write middleware for admin authorization is using util function
+
+
+
+app.get("/user",(req,res,next)=>{
+   // here we will do lot of things
+   //logic of DB call and get user data
+   // to handle errors, we can use try catch block
+   // try to write all code inside try , catch manner
+   try{
+       //logic to get user data from DB  
+   }catch(err){
+       //handle error
+       res.status(500).send("internal server error");
+   }
+    res.send("user response");
+});
+//other way to handle errors is using error handling middleware .. that is adding err, that is 1st parameter in app.use
+//graceful error handling using error handling middleware
+app.use.use('/',(err,req,res,next)=>{// '/' can be any route, it will work for all routes and called as wildcard route
+   if(err){
+    //we can log the error also here
+       res.status(500).send("internal server error from error handling middleware");
+   }    
+});
+// we need to define error handling middleware at last only, after all route handlers and other middlewares because it should catch all errors from all routes and middlewares so order is important here, otherwise it may not work as expected
 app.listen(3000,()=>{
     console.log("server successfully listening to 3000");
 });

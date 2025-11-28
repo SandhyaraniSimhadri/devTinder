@@ -32,3 +32,4 @@
 - how express JS basically handles requests behind the scenes
 - difference between app.use and app.all
 - write a dummy auth middleware for all user routes, except /user/login
+- error handling using app.use.use('/',(err,req,res,next))
