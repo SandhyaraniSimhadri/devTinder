@@ -23,3 +23,8 @@
 - use of regex in routes /a/, /.*fly$
 - how to read query params in routes 
 - reading the dynamic routes
+
+- multiple routes handlers - play with code
+- next()
+- next function and errors along with res.send()
+- app.use("/user" array wrapped routes);
