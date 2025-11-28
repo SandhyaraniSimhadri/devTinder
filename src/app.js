@@ -31,17 +31,68 @@ app.get("/user",(req,res)=>{
 })
 // for every call POST< GET or any other, it will give data saved. so here also order of routes imp
 
-app.use("/user",(req,res)=>{
-   res.end("data saved");
+// app.use("/user",(req,res)=>{
+//    res.end("data saved");
+// })
+
+
+// app.post("/user",(req,res)=>{
+//    res.end("data saved");
+// })
+
+// app.delete("/user",(req,res)=>{
+//    res.end("data deleted");
+// })
+
+
+// it will work for ac, abc
+// app.get("/ab?c",(req,res)=>{
+//     res.send({firstName:"sandhya", lastName:"rani"})
+// })
+
+//bd is optional
+// app.get("/a(bc)?d",(req,res)=>{
+//     res.send({firstName:"sandhya", lastName:"rani"})
+// })
+// it will work for abc, abbbbc, means any number of b's.. these are like regular expressions
+// app.get("/ab+c",(req,res)=>{
+//     res.send({firstName:"sandhya", lastName:"rani"})
+// })
+
+
+// ab and anything in between and cd at last
+// app.get("/ab*cd",(req,res)=>{
+//     res.send({firstName:"sandhya", lastName:"rani"})
+// })
+
+//path contains 'a' letter will work
+// app.get("/a/",(req,res)=>{
+//     res.send({firstName:"sandhya", lastName:"rani"})
+// })
+
+// start with anything, have fly at end
+// app.get("/.*fly$/",(req,res)=>{
+//     res.send({firstName:"sandhya", lastName:"rani"})
+// })
+
+//how to access query params which are passed through url /user?userId=10
+app.get("/user",(req,res)=>{
+    console.log(req.query);// this will give all the query params which are passed through url
+    res.send({firstName:"sandhya", lastName:"rani"})
 })
 
 
-app.post("/user",(req,res)=>{
-   res.end("data saved");
+//how to access query params which are passed through url /user/10 --- dynamic apis
+//":" means dynamic route
+app.get("/user/:userId",(req,res)=>{
+    console.log(req.params);// this will give all the query params which are passed through url /user/10 --- dynamic apis
+    res.send({firstName:"sandhya", lastName:"rani"})
 })
 
-app.delete("/user",(req,res)=>{
-   res.end("data deleted");
+
+app.get("/user/:userId/:password/:classId",(req,res)=>{
+    console.log(req.params);// this will give all the query params which are passed through url /user/10 --- dynamic apis
+    res.send({firstName:"sandhya", lastName:"rani"})
 })
 
 
