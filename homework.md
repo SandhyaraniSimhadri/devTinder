@@ -33,3 +33,14 @@
 - difference between app.use and app.all
 - write a dummy auth middleware for all user routes, except /user/login
 - error handling using app.use.use('/',(err,req,res,next))
+
+
+- create a free cluster in mongodb website --- mongo atlas
+- install mongoose library
+- connect application to the cluster-> db ---- use connection URL
+- call the connectDB connection and connect DB before starting listening on port for incoming requests
+- create a user schema and usermodel
+- create /signup post api to add data to DB
+- push some docs using API calls from postman
+- error handling using try, catch
+
