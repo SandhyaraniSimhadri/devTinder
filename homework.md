@@ -69,3 +69,4 @@
 - add API validation for each field--- this all is Data sanitization
 - install validator
 - explore validator library functions ans use validator functions for password, email, photoURL
+- NEVER TRUST req.body
