@@ -59,3 +59,11 @@
 - explore the mongoose document especially the Model methods
 - what are options in a model.findOneAndUpdate
 - create API which update the user with emailid
+- Explore schematype options from the documentation
+- add required, unique, lowercase, min,max, minlength,maxlength
+- Add default value
+- create a custom validate function for gender 
+-improve the DB schema - put all appropriate validations on each field in schema
+- add timestamps to the userSchema
+- add API level validation on Patch request and signup post API
+- add API validation for each field--- this all is Data sanitization

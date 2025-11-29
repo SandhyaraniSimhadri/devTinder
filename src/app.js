@@ -80,8 +80,9 @@ app.delete("/user",async(req,res)=>{
 
 
 //update user details using user id
-app.patch("/user",async(req,res)=>{
-  const userId=req.body.userId;     
+// to add default validate function while updating we need to pass runValidators:true in the options object as 3rd param
+app.patch("/user/:userId",async(req,res)=>{
+  const userId=req.params?.userId;     
     const updateData=req.body;
     //if updatedData contains any fields which are not in the schema, those fields will be ignored
     // so only the fields which are in the schema will be updated, we no need to worry about that
@@ -91,8 +92,23 @@ app.patch("/user",async(req,res)=>{
     // some are: upsert, runValidators, context etc
     // other is returnDucument: 'after' which is same as {new:true}
     //default value is false, so it will return the old document
-    try{  
-      const user= await User.findByIdAndUpdate(userId,updateData);
+
+
+    //adding api level validations
+    // dont allow user to update emailid
+   
+     
+    try{ 
+         const ALLOWED_UPDATES=["photoUrl","about","gender","age"];
+    const isUpdateAllowed = Object.keys(updateData).every(k=> ALLOWED_UPDATES.includes(k));
+
+    if(!isUpdateAllowed){
+       res.status(400).send("Invalid updates! You can only update photoUrl, about, gender, age.");
+    } 
+    if(updateData?.skills.length>10){
+        throw new Error("You can add maximum 10 skills");
+    }
+      const user= await User.findByIdAndUpdate(userId,updateData,{ new: true, runValidators: true });
       //otherway 
     //   const user = await User.findByIdAndUpdate({_id: userId}, updateData, { new: true });
          res.json(user);        
