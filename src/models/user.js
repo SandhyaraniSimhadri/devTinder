@@ -1,4 +1,5 @@
 const mongoose=require('mongoose');
+const validator=require('validator');
 const userSchema=new mongoose.Schema({ 
     //use camel case for naming the fields   
     //to make mandatory field we can use required:true  
@@ -10,8 +11,24 @@ const userSchema=new mongoose.Schema({
     // but this is not a validation, its an index, so its better to handle this in application logic
     //adding lowercase:true will make the emailId to lowercase before saving to database
     //trim:true will remove the extra spaces before and after the emailId
-    emailId:{type:String, required:true, unique:true,lowercase:true,trim:true},
-    password:{type:String, required:true},
+    //email id should have pattren
+    // to add those we can take help from external libraries also
+    // here validator NPM libtary is used to validate the email pattern
+    emailId:{type:String, required:true, unique:true,lowercase:true,trim:true,
+        validate(value){
+            if(!validator.isEmail(value)){
+                throw new Error("Invalid email id");
+            }   
+        }
+    },
+
+    password:{type:String, required:true,
+         validate(value){
+            if(!validator.isStrongPassword(value)){
+                throw new Error("Password is not strong enough");
+            }   
+        }
+    },
     //for string type, we need minLength and maxLength
     //for number type, we need min and max
     age:{type:Number,min:18,max:120},
@@ -33,7 +50,12 @@ const userSchema=new mongoose.Schema({
     },
     photoUrl:{
         type:String,
-        default:"https://www.example.com/default-photo.jpg"
+        default:"https://www.example.com/default-photo.jpg",
+        validate(value){
+            if(!validator.isURL(value)){
+                throw new Error("Invalid URL");
+            }   
+        }
     },
     about:{
         type:String,
