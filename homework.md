@@ -48,4 +48,7 @@
 - difference between Javascript object and JSON object
 - add the express.json middlware to your app
 - make your signup api dynamic to receive data from the end user
+- user.findOne with duplicate email ids, which object it will return
+- create API- get user by email
+- create API - GET/feed - to get all the users from DB
 
