@@ -64,6 +64,45 @@ app.get("/feed", async (req, res) => {
   }
 });
 
+///delete user from the database using user id
+app.delete("/user",async(req,res)=>{
+  const userId=req.body.userId;     
+    try{  
+      const user= await User.findByIdAndDelete(userId);
+      //otherway 
+    //   const user= await User.findByIdAndDelete({_id:userId});
+
+       res.send("User deleted successfully");
+    }catch(err){
+      res.status(500).send("Error deleting user: " + err.message);
+    }
+});
+
+
+//update user details using user id
+app.patch("/user",async(req,res)=>{
+  const userId=req.body.userId;     
+    const updateData=req.body;
+    //if updatedData contains any fields which are not in the schema, those fields will be ignored
+    // so only the fields which are in the schema will be updated, we no need to worry about that
+    //fields which are not in the schema will be ignored automatically by mongoose
+    //3rd param in findByIdAndUpdate is optional, if we want to return the updated document we can pass {new:true} as 3rd param
+    // there are other options also which we can pass as 3rd param, we can check the mongoose documentation for that
+    // some are: upsert, runValidators, context etc
+    // other is returnDucument: 'after' which is same as {new:true}
+    //default value is false, so it will return the old document
+    try{  
+      const user= await User.findByIdAndUpdate(userId,updateData);
+      //otherway 
+    //   const user = await User.findByIdAndUpdate({_id: userId}, updateData, { new: true });
+         res.json(user);        
+         //it will return the updated user object   
+    }catch(err){
+      res.status(500).send("Error updating user: " + err.message);
+    }       
+});
+
+
 connectDB().then(()=>{ 
     console.log("DB connected successfully");
     app.listen(3000,()=>{
