@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express(); //instance of express
 import { userAuth } from "../middlewares/auth.js";
-import { adminAuth } from "./src/middlewares/auth.js";
+import { adminAuth } from "./src/middlewares/dummy-auth.js";
 //this is called as request handler
 // here for all requests, its giving hello from server
 // app.use((req,res)=>{
