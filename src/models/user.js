@@ -1,5 +1,7 @@
 const mongoose=require('mongoose');
 const validator=require('validator');
+const jwt = require("jsonwebtoken")
+const bcrypt= require("bcrypt");
 const userSchema=new mongoose.Schema({ 
     //use camel case for naming the fields   
     //to make mandatory field we can use required:true  
@@ -84,4 +86,21 @@ const userSchema=new mongoose.Schema({
 // and difference in functionality is schema defines the structure of document and model provides interface to database for CRUD operations
 
 //schema means structure of document, where as model is a class with which we construct documents. In mongoose, each document will be an instance of a model. Models are responsible for creating and reading documents from the underlying MongoDB database.
+
+
+userSchema.methods.getJWT= async function (){
+    const user = this;
+    //'this' will present to userModel
+    //this keyword properly work with normal functions , not properly with arrow functions
+    const token = await jwt.sign({ _id: user._id }, "DEV@Tinder2025",{
+        expiresIn:"1d"
+      });
+      return token;
+}
+userSchema.methods.validatePassword= async function (passwordInputByUser){
+    const user = this;
+    const passwordHash=user.password
+    const isPasswordValid = await bcrypt.compare(passwordInputByUser,passwordHash);
+    return isPasswordValid;
+}
 module.exports=mongoose.model("User",userSchema);
