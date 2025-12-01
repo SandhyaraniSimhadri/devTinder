@@ -6,7 +6,10 @@ const userSchema=new mongoose.Schema({
     //use camel case for naming the fields   
     //to make mandatory field we can use required:true  
     //if required:true fields are not provided while creating document, it will give validation error and mongo dont do the insert operation
-    firstName:{type:String, required:true,minLength:4,maxLength:50},
+    firstName:{type:String, required:true,minLength:4,maxLength:50,
+        index:true
+    },
+    //indexing can be normal index and uqniue index and sparse index
     lastName:{type:String},
     //adding unique:true to emailId to make it unique
     // if we try to insert duplicate emailId it will give error
@@ -16,6 +19,12 @@ const userSchema=new mongoose.Schema({
     //email id should have pattren
     // to add those we can take help from external libraries also
     // here validator NPM libtary is used to validate the email pattern
+
+
+    //if we have unique:true, mangodb automatically creates index for that
+    // so we don't need to worry about the efficiency of the API if we finding with emailId in our DB
+
+    // to make a field index, we can write as index:true
     emailId:{type:String, required:true, unique:true,lowercase:true,trim:true,
         validate(value){
             if(!validator.isEmail(value)){
@@ -44,10 +53,13 @@ const userSchema=new mongoose.Schema({
     //be default this valdate function only called when we are creating new document
     // if we want to call this validate function while updating also, we need to pass runValidators:true in the options object while updating
     gender:{type:String,
-        validate(value){
-            if(!["male","female","other"].includes(value)){
-                throw new Error("Gender must be male, female or other");
-            }
+        // validate(value){
+        //     if(!["male","female","other"].includes(value)){
+        //         throw new Error("Gender must be male, female or other");
+        //     }
+        // }
+         enum:{values:["male", "gemale", "other"],
+        message:`{VALUE} is not a valid gender type`
         }
     },
     photoUrl:{
@@ -87,6 +99,12 @@ const userSchema=new mongoose.Schema({
 
 //schema means structure of document, where as model is a class with which we construct documents. In mongoose, each document will be an instance of a model. Models are responsible for creating and reading documents from the underlying MongoDB database.
 
+
+//compound index .. this below compound index is usefull when we search both first and last name things
+// User.find({firstName:1,lastName:1});
+userSchema.index({firstName:1, lastName:1});
+
+//if ew create indexes on each and every things/field, it will cause unnecessaru issues.. learn about these
 
 userSchema.methods.getJWT= async function (){
     const user = this;
