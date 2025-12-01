@@ -121,3 +121,9 @@
 - ALWAYS think about corner cases
 
 -write code with proper validations for /request/review/:status/:requestId
+
+- Thought process - POST vs GET .. for post, user can post any thing (data), so validation is needed, ... for get, user can try to take the data from DB, so we need to send only allowed data, and user should be autherozied, verified etc
+
+- read about ref and populate
+- create GET /user/requests/received witl all corner checks
+- create GET API /user/connections
